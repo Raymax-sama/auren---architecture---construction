@@ -557,7 +557,7 @@ export default function Methodology({ onOpenVideoModal }: MethodologyProps) {
               </div>
               <span className="text-[#B49B7E] text-[10px] tabular-nums">
                 {viewMode === 'video'
-                  ? `IMAGE ${String(chantier.frameIndex + 1).padStart(3, '0')} / ${TOTAL_CHANTIER_FRAMES} · ${Math.round(chantier.progress * 100)} %`
+                  ? 'Séquence en cours'
                   : current.cadSubtitle}
               </span>
             </div>

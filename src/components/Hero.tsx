@@ -140,13 +140,19 @@ export default function Hero({ onOpenContact }: HeroProps) {
 
               <div className="flex items-center gap-3">
                 <span className="text-[10px] uppercase text-[#B49B7E] tabular-nums">
-                  SÉQUENCE {String(frameIndex + 1).padStart(3, '0')} / {TOTAL_MAS_FRAMES}
+                  SÉQUENCE EN COURS
                 </span>
                 <span className="hidden sm:flex items-center gap-2 text-[10px] uppercase text-[#EAE6DD]/80">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#B49B7E] animate-pulse" />
                   <span>Défiler pour contempler la métamorphose</span>
                 </span>
               </div>
+            </div>
+            {/* Barre de progression percentuelle masquée pour le client */}
+            <div className="hidden">
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#B49B7E] tabular-nums">
+                {Math.round(monoProgress * 100)} %
+              </span>
             </div>
 
           </div>

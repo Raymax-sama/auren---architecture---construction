@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import LoadingScreen from './components/LoadingScreen';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Expertise from './components/Expertise';
@@ -17,14 +18,13 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<string>('Construction neuve');
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [isVideoModalOpen, setIsVideoModalOpen] = useState<boolean>(false);
-
-  // Track active section for precise navigation menu highlights
+  const [appReady, setAppReady] = useState<boolean>(false);// Track active section for precise navigation menu highlights
   useEffect(() => {
     const sectionIds = ['hero', 'expertise', 'transformations', 'methodologie', 'contact'];
 
     const handleScroll = () => {
       const scrollPos = window.scrollY + 180; // Offset for header height
-      
+
       for (let i = sectionIds.length - 1; i >= 0; i--) {
         const id = sectionIds[i];
         const el = document.getElementById(id);
@@ -44,6 +44,12 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Dès que le premier render est terminé, on considère l'app "prête".
+  // Cela permet d'afficher l'écran de chargement le temps que les images/frames se préchargent.
+  useEffect(() => {
+    setAppReady(true);
+  }, []);
+
   const scrollToContact = (service?: string) => {
     if (service) {
       setSelectedService(service);
@@ -53,6 +59,11 @@ export default function App() {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Si l'app n'est pas encore « prête », on n'affiche que l'écran de chargement.
+  if (!appReady) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-[#0F100F] text-[#EAE6DD] flex flex-col font-sans selection:bg-[#92795E] selection:text-[#0F100F]">

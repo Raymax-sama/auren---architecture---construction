@@ -452,24 +452,20 @@ export default function ComparisonSlider() {
           
           {/* Sticky Container pinned during scroll — internally scrollable so no
               content is ever clipped on short viewports (mobile / laptop) */}
-          <div className="sticky top-16 sm:top-20 w-full max-h-[calc(100svh-4.5rem)] sm:max-h-[calc(100svh-6rem)] bg-[#121312] border border-[#EAE6DD]/15 p-4 sm:p-8 rounded-xs shadow-2xl overflow-y-auto overscroll-contain space-y-5 sm:space-y-6">
+          <div className="sticky top-16 sm:top-20 w-full max-h-[calc(100svh-4.5rem)] sm:max-h-[calc(100svh-6rem)] bg-[#121312] border border-[#EAE6DD]/15 p-4 sm:p-8 rounded-xs shadow-2xl overflow-hidden overscroll-contain space-y-5 sm:space-y-6">
             
             {/* Header info */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#EAE6DD]/10">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#B49B7E] font-semibold block mb-1">
-                  Relevé Drone Continu • Chronophotographie 4K
-                </span>
+                <span className="hidden">Relevé Drone Continu • Chronophotographie 4K</span>
                 <h3 className="font-serif text-2xl sm:text-3xl text-[#EAE6DD] font-light">
                   Métamorphose Pas à Pas : Résidence Horizon
                 </h3>
               </div>
               <div className="flex items-center gap-3 text-xs font-mono text-[#BDB3A3]">
-                <span className="text-[10px] uppercase text-[#B49B7E]">
-                  Étape {String(villaFrameIdx + 1).padStart(2, '0')} / {TOTAL_HERO_FRAMES}
-                </span>
+                <span></span>
                 <span className="text-[#EAE6DD]/40">•</span>
-                <span className="text-[#EAE6DD]">{Math.round(villaScrollProgress * 100)}% achevé</span>
+                <span></span>
               </div>
             </div>
 
