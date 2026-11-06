@@ -1,0 +1,14 @@
+#!/bin/sh
+# Publication automatique sur Netlify après chaque commit sur la branche main.
+# Ignorer un commit : y ajouter la ligne "[skip deploy]" dans le message.
+
+cd "$(git rev-parse --show-toplevel)" || exit 0
+
+[ "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" = "main" ] || exit 0
+
+if git log -1 --pretty=%B | grep -q "\[skip deploy\]"; then
+  echo "→ Publication ignorée ([skip deploy])"
+  exit 0
+fi
+
+sh scripts/deploy.sh

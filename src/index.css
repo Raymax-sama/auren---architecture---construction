@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
+  --color-warm-ivory: #EAE6DD;
+  --color-charcoal: #151615;
+  --color-charcoal-light: #1F211F;
+  --color-charcoal-card: #252825;
+  --color-muted-bronze: #92795E;
+  --color-muted-bronze-light: #B49B7E;
+  /* Two bronze ramps so every text keeps a WCAG AA contrast ratio:
+     - -ink  : deep bronze for text sitting on the ivory sections (>= 4.6:1)
+     - -glow : lifted bronze for text sitting on the charcoal sections (>= 4.8:1) */
+  --color-bronze-ink: #6F5B41;
+  --color-bronze-glow: #9E8467;
+  --color-secondary-beige: #BDB3A3;
+}
+
+:root {
+  color-scheme: dark light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Manrope", system-ui, sans-serif;
+  background-color: #151615;
+  color: #EAE6DD;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom editorial selection */
+::selection {
+  background-color: #92795E;
+  color: #151615;
+}
+
+/* Editorial fade-in used by the mobile drawer and the form confirmation state */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Subtle stagger helper for editorial reveal sequences */
+.animate-fadeIn-delay {
+  animation-delay: 0.12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fadeIn {
+    animation: none;
+  }
+}
+
+/* Hide scrollbars for clean aesthetic while keeping functional scroll */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #151615;
+}
+::-webkit-scrollbar-thumb {
+  background: #363935;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #92795E;
+}
