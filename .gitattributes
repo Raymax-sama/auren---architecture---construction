@@ -1,0 +1,13 @@
+# Normalise les fins de ligne : indispensable pour que le hook
+# .githooks/post-commit reste exécutable par /bin/sh après un checkout.
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.bat text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.mp4 binary
+*.ico binary
