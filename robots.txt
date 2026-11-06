@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Disallow: /dist/
+Disallow: /node_modules/
+Disallow: /scripts/
+Disallow: .githooks/
+
+# Sitemap
+Sitemap: https://auren-architecture.netlify.app/sitemap.xml
+
+# Configuration par langue / région
+User-agent: Googlebot
+Allow: /
+Host: auren-architecture.netlify.app
+
+# Retarder un peu l'exploration pour éviter le pic serveur
+# Crawl-delay: 2
+
+# Spécifique Bing
+User-agent: BingBot
+Allow: /

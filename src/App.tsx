@@ -47,7 +47,35 @@ export default function App() {
   // Dès que le premier render est terminé, on considère l'app "prête".
   // Cela permet d'afficher l'écran de chargement le temps que les images/frames se préchargent.
   useEffect(() => {
-    setAppReady(true);
+    let isMounted = true;
+    let imgComplete = false;
+
+    // Vérifier si l'image Hero est déjà préchargée
+    const img = new Image();
+    img.src = 'https://auren-architecture.netlify.app/images/hero-poster-completed.jpg';
+    img.onload = () => { imgComplete = true; };
+
+    const checkReady = async () => {
+      // Respecter prefers-reduced-motion : accélérer si demandé
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const timeoutMs = prefersReduced ? 2000 : 5000;
+      const deadline = Date.now() + timeoutMs;
+
+      while (Date.now() < deadline) {
+        if (!isMounted) return;
+        const fontsReady = document.fonts ? await document.fonts.ready : true;
+        if (fontsReady && imgComplete) {
+          setAppReady(true);
+          return;
+        }
+        await new Promise(r => setTimeout(r, 100));
+      }
+      if (isMounted) setAppReady(true);
+    };
+
+    checkReady();
+
+    return () => { isMounted = false; };
   }, []);
 
   const scrollToContact = (service?: string) => {

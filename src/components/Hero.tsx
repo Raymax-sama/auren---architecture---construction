@@ -44,7 +44,7 @@ export default function Hero({ onOpenContact }: HeroProps) {
         {/* Poster underlay — stays visible until the first frame is decoded */}
         <img
           src={HERO_POSTER_SRC}
-          alt=""
+          alt="Auréen — Villa contemporaine livrée, façade en verre et acier, baies panoramiques"
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         />
