@@ -34,7 +34,7 @@ export default function Hero({ onOpenContact }: HeroProps) {
       ref={trackRef}
       id="hero"
       className={`relative w-full bg-[#0F100F] select-none ${
-        isReducedMotion ? 'h-[100svh]' : 'h-[230vh]'
+        isReducedMotion ? 'h-[100svh]' : 'h-[180vh]'
       }`}
       aria-label="Hero cinématique AUREN"
     >
