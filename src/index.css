@@ -35,6 +35,23 @@ body {
 }
 
 /* Custom editorial selection */
+.skip-link {
+  position: absolute;
+  left: -100px;
+  top: 0;
+  width: 100px;
+  background: #EAE6DD;
+  color: #151615;
+  padding: 8px 0;
+  text-decoration: none;
+  z-index: 100;
+  transition: left 0.2s;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
 ::selection {
   background-color: #92795E;
   color: #151615;
