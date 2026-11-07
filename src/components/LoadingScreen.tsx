@@ -1,7 +1,7 @@
 /**
  * Écran de chargement plein écran affiché au premier rendu de l'app.
  * Masqué dès que le layout principal est prêt (useEffect final d'App).
- * Garde une marge de sécurité le temps que les images/frames se préchargent.
+ * Affiche le temps que les fonts et l'hero image se préchargent.
  */
 
 import { useEffect, useState } from 'react';
@@ -9,12 +9,9 @@ import { useEffect, useState } from 'react';
 const LoadingScreen = () => {
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    // On attends un micro-tick puis on considère le layout chargé.
-    // Cela laisse le temps aux images/frames de commencer leur préchargement.
-    const timer = setTimeout(() => setReady(true), 120);
-    return () => clearTimeout(timer);
-  }, []);
+  // On considère l'écran prêt dès que le parent (App) l'indique.
+  // Pas de compteur autonome : on fait confiance au mécanisme d'App.tsx.
+  useEffect(() => {}, []);
 
   if (ready) return null;
 
