@@ -18,7 +18,13 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<string>('Construction neuve');
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [isVideoModalOpen, setIsVideoModalOpen] = useState<boolean>(false);
-  const [appReady, setAppReady] = useState<boolean>(false);// Track active section for precise navigation menu highlights
+  // Boot sequence: the curtain sits on top of an already-mounted page, so it
+  // lifts onto laid-out content instead of a blank screen.
+  const [appReady, setAppReady] = useState<boolean>(false);
+  const [bootProgress, setBootProgress] = useState<number>(0);
+  const [loaderVisible, setLoaderVisible] = useState<boolean>(true);
+
+  // Track active section for precise navigation menu highlights
   useEffect(() => {
     const sectionIds = ['hero', 'expertise', 'transformations', 'methodologie', 'contact'];
 
@@ -44,39 +50,78 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Dès que le premier render est terminé, on considère l'app "prête".
-  // Cela permet d'afficher l'écran de chargement le temps que les images/frames se préchargent.
+  // Boot sequence — the curtain reports genuine progress: the web fonts plus the
+  // poster the hero actually displays. A minimum on-screen time keeps the reveal
+  // from flashing, and a hard deadline guarantees we never trap a visitor behind
+  // a slow asset.
   useEffect(() => {
     let isMounted = true;
-    let imgComplete = false;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const minMs = prefersReduced ? 450 : 1800;
+    const maxMs = prefersReduced ? 1600 : 4500;
+    const curtainMs = prefersReduced ? 300 : 1150;
+    const startedAt = performance.now();
 
-    // Vérifier si l'image Hero est déjà préchargée
-    const img = new Image();
-    img.src = '/images/hero-poster-completed.jpg';
-    img.onload = () => { imgComplete = true; };
+    // Entering the atelier always starts at the top of the narrative, even after
+    // a reload from the middle of the page — the curtain must lift onto the hero.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
 
-    const checkReady = async () => {
-      // Respecter prefers-reduced-motion : accélérer si demandé
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const timeoutMs = prefersReduced ? 2000 : 5000;
-      const deadline = Date.now() + timeoutMs;
+    let assetsReady = false;
+    const fontsReady: Promise<unknown> = document.fonts ? document.fonts.ready : Promise.resolve();
 
-      while (Date.now() < deadline) {
-        if (!isMounted) return;
-        const fontsReady = document.fonts ? await document.fonts.ready : true;
-        if (fontsReady && imgComplete) {
-          setAppReady(true);
-          return;
-        }
-        await new Promise(r => setTimeout(r, 100));
-      }
-      if (isMounted) setAppReady(true);
+    const poster = new Image();
+    const posterReady = new Promise<void>((resolve) => {
+      poster.onload = () => resolve();
+      poster.onerror = () => resolve();
+      poster.src = '/images/hero-poster-start.jpg';
+    });
+
+    Promise.all([fontsReady, posterReady]).then(() => {
+      assetsReady = true;
+    });
+
+    const release = () => {
+      window.clearInterval(timer);
+      setBootProgress(100);
+      setAppReady(true);
+      window.setTimeout(() => {
+        if (isMounted) setLoaderVisible(false);
+      }, curtainMs);
     };
 
-    checkReady();
+    const timer = window.setInterval(() => {
+      if (!isMounted) return;
+      const elapsed = performance.now() - startedAt;
 
-    return () => { isMounted = false; };
+      if ((assetsReady && elapsed >= minMs) || elapsed >= maxMs) {
+        release();
+        return;
+      }
+
+      // The counter must keep moving, otherwise a fast boot looks frozen: it
+      // creeps toward 92% and only snaps to 100% when the release fires.
+      const creep = Math.min(92, (elapsed / minMs) * 88);
+      setBootProgress((prev) => Math.max(prev, Math.round(creep)));
+    }, 50);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(timer);
+    };
   }, []);
+
+  // Hold the page still behind the curtain, then hand scrolling back.
+  useEffect(() => {
+    if (appReady) {
+      document.body.style.overflow = '';
+      return;
+    }
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [appReady]);
 
   const scrollToContact = (service?: string) => {
     if (service) {
@@ -88,12 +133,10 @@ export default function App() {
     }
   };
 
-  // Si l'app n'est pas encore « prête », on n'affiche que l'écran de chargement.
-  if (!appReady) {
-    return <LoadingScreen />;
-  }
-
   return (
+    <>
+      {loaderVisible && <LoadingScreen progress={bootProgress} exiting={appReady} />}
+
     <div className="min-h-screen bg-[#0F100F] text-[#EAE6DD] flex flex-col font-sans selection:bg-[#92795E] selection:text-[#0F100F]">
       {/* Editorial Header (Clean 3-zone, no redundant buttons) */}
       <Header
@@ -130,5 +173,6 @@ export default function App() {
         title="Immersion Chantier 16:9 — Levage & Coordination BIM In Situ"
       />
     </div>
+    </>
   );
 }

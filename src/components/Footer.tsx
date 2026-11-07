@@ -27,16 +27,20 @@ export default function Footer() {
             </p>
             <div className="flex gap-4 pt-2">
               <a
-                href="#"
+                href="https://www.instagram.com/auren.architecture/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full border border-[#EAE6DD]/20 flex items-center justify-center text-[#EAE6DD]/70 hover:text-[#92795E] hover:border-[#92795E] transition-colors text-xs"
-                aria-label="Instagram"
+                aria-label="Instagram — AUREN (nouvel onglet)"
               >
                 <Instagram className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/auren-architecture/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full border border-[#EAE6DD]/20 flex items-center justify-center text-[#EAE6DD]/70 hover:text-[#92795E] hover:border-[#92795E] transition-colors text-xs"
-                aria-label="LinkedIn"
+                aria-label="LinkedIn — AUREN (nouvel onglet)"
               >
                 <Linkedin className="w-4 h-4" />
               </a>

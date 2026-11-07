@@ -78,11 +78,75 @@ body {
   animation-delay: 0.12s;
 }
 
+/* ------------------------------------------------------------------
+   Boot sequence. Transform and opacity only: the opening must feel like
+   a curtain, never like a loading bar.
+   ------------------------------------------------------------------ */
+@keyframes letterRise {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.boot-letter {
+  display: inline-block;
+  animation: letterRise 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ruleDraw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.boot-rule {
+  transform-origin: left center;
+  animation: ruleDraw 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bronzeBreathe {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.06);
+  }
+}
+
+.boot-glow {
+  animation: bronzeBreathe 5.5s ease-in-out infinite;
+}
+
+/* Fine film grain: lends the flat charcoal a printed, atelier quality. */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .animate-fadeIn {
+    animation: none;
+  }
+  .boot-letter,
+  .boot-rule,
+  .boot-glow {
     animation: none;
   }
 }
