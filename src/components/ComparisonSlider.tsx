@@ -180,20 +180,21 @@ export default function ComparisonSlider() {
           const el = villaTrackRef.current;
           if (el) {
             const rect = el.getBoundingClientRect();
-            const scrubRange = rect.height - window.innerHeight;
+            const panel = el.firstElementChild as HTMLElement | null;
 
-            // Desktop: the tall track is pinned, so the scrub range drives the
-            // sequence. Mobile / short viewports: the track has its natural height
-            // (scrubRange <= 0), so progression is read from the block travelling
-            // through the viewport — the page scroll itself is never intercepted.
             // The pin only exists from the `lg` breakpoint (1024px). Match the CSS
             // instead of inferring from geometry: a naturally tall mobile block
             // would otherwise be mistaken for a desktop scrub track.
             const isPinned = window.matchMedia('(min-width: 1024px)').matches;
 
             let p: number;
-            if (isPinned) {
-              p = scrubRange > 0 ? -rect.top / scrubRange : 0;
+            if (isPinned && panel) {
+              // A sticky child releases the moment its bottom reaches the end of
+              // this track. Using that exact distance as the denominator makes the
+              // sequence reach 100% right as the panel unpins, so no dead scroll is
+              // left over once the animation has finished.
+              const pinTravel = rect.height - panel.offsetHeight;
+              p = pinTravel > 0 ? -rect.top / pinTravel : 0;
             } else {
               const travel = rect.height + window.innerHeight;
               p = travel > 0 ? (window.innerHeight - rect.top) / travel : 0;
@@ -231,13 +232,15 @@ export default function ComparisonSlider() {
   const jumpToPhase = (phaseIdx: number) => {
     if (!villaTrackRef.current) return;
     const targetProgress = (phaseIdx + 0.1) / 4;
-    const rect = villaTrackRef.current.getBoundingClientRect();
-    const scrubRange = rect.height - window.innerHeight;
+    const track = villaTrackRef.current;
+    const rect = track.getBoundingClientRect();
+    const panel = track.firstElementChild as HTMLElement | null;
+    const pinTravel = panel ? rect.height - panel.offsetHeight : 0;
 
     const isPinned = window.matchMedia('(min-width: 1024px)').matches;
     const targetScrollY =
-      isPinned && scrubRange > 0
-        ? window.scrollY + rect.top + targetProgress * scrubRange
+      isPinned && pinTravel > 0
+        ? window.scrollY + rect.top + targetProgress * pinTravel
         : window.scrollY +
           rect.top -
           (window.innerHeight - targetProgress * (rect.height + window.innerHeight));

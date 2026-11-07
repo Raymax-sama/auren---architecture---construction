@@ -52,7 +52,7 @@ export default function App() {
 
     // Vérifier si l'image Hero est déjà préchargée
     const img = new Image();
-    img.src = 'https://auren-architecture.netlify.app/images/hero-poster-completed.jpg';
+    img.src = '/images/hero-poster-completed.jpg';
     img.onload = () => { imgComplete = true; };
 
     const checkReady = async () => {
