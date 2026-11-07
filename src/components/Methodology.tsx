@@ -226,9 +226,9 @@ export default function Methodology({ onOpenVideoModal }: MethodologyProps) {
           {/* Engineering & Video Visualizer Studio (Takes 7 cols) */}
           <div ref={chantier.trackRef} className={`lg:col-span-7 relative ${viewMode === 'video' ? 'h-[180vh]' : ''}`}>
           <div
-            className={`bg-[#121312] text-[#EAE6DD] p-5 sm:p-7 rounded-xs border border-[#151615] shadow-2xl flex flex-col overflow-y-auto ${
+            className={`bg-[#121312] text-[#EAE6DD] p-5 sm:p-7 rounded-xs border border-[#151615] shadow-2xl flex flex-col ${
               viewMode === 'video'
-                ? 'sticky top-16 sm:top-20 max-h-[calc(100svh-5rem)]'
+                ? 'sticky top-16 sm:top-20 max-h-[calc(100svh-5rem)] overflow-y-auto'
                 : 'relative overflow-hidden'
             }`}
           >

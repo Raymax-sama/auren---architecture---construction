@@ -177,21 +177,37 @@ export default function ComparisonSlider() {
     const onScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          if (villaTrackRef.current) {
-            const rect = villaTrackRef.current.getBoundingClientRect();
-            const total = rect.height - window.innerHeight;
-            if (total > 0) {
-              const current = -rect.top;
-              const p = Math.min(Math.max(current / total, 0), 1);
-              setVillaScrollProgress(p);
+          const el = villaTrackRef.current;
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            const scrubRange = rect.height - window.innerHeight;
 
-              const frameIdx = Math.min(
-                Math.floor(p * TOTAL_HERO_FRAMES),
-                TOTAL_HERO_FRAMES - 1
-              );
-              setVillaFrameIdx(frameIdx);
-              renderVillaFrame(frameIdx);
+            // Desktop: the tall track is pinned, so the scrub range drives the
+            // sequence. Mobile / short viewports: the track has its natural height
+            // (scrubRange <= 0), so progression is read from the block travelling
+            // through the viewport — the page scroll itself is never intercepted.
+            // The pin only exists from the `lg` breakpoint (1024px). Match the CSS
+            // instead of inferring from geometry: a naturally tall mobile block
+            // would otherwise be mistaken for a desktop scrub track.
+            const isPinned = window.matchMedia('(min-width: 1024px)').matches;
+
+            let p: number;
+            if (isPinned) {
+              p = scrubRange > 0 ? -rect.top / scrubRange : 0;
+            } else {
+              const travel = rect.height + window.innerHeight;
+              p = travel > 0 ? (window.innerHeight - rect.top) / travel : 0;
             }
+            p = Math.min(Math.max(p, 0), 1);
+
+            setVillaScrollProgress(p);
+
+            const frameIdx = Math.min(
+              Math.floor(p * TOTAL_HERO_FRAMES),
+              TOTAL_HERO_FRAMES - 1
+            );
+            setVillaFrameIdx(frameIdx);
+            renderVillaFrame(frameIdx);
           }
           ticking = false;
         });
@@ -216,8 +232,16 @@ export default function ComparisonSlider() {
     if (!villaTrackRef.current) return;
     const targetProgress = (phaseIdx + 0.1) / 4;
     const rect = villaTrackRef.current.getBoundingClientRect();
-    const total = rect.height - window.innerHeight;
-    const targetScrollY = window.scrollY + rect.top + targetProgress * total;
+    const scrubRange = rect.height - window.innerHeight;
+
+    const isPinned = window.matchMedia('(min-width: 1024px)').matches;
+    const targetScrollY =
+      isPinned && scrubRange > 0
+        ? window.scrollY + rect.top + targetProgress * scrubRange
+        : window.scrollY +
+          rect.top -
+          (window.innerHeight - targetProgress * (rect.height + window.innerHeight));
+
     window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
   };
 
@@ -308,6 +332,7 @@ export default function ComparisonSlider() {
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               className="relative w-full aspect-video bg-black border border-[#EAE6DD]/20 rounded-xs overflow-hidden cursor-ew-resize shadow-2xl select-none"
+              style={{ touchAction: 'pan-y' }}
               role="slider"
               aria-label={`Comparateur interactif pour ${current.title}`}
               aria-valuenow={sliderPos}
@@ -448,11 +473,12 @@ export default function ComparisonSlider() {
         {/* SCROLL-DRIVEN ARCHITECTURAL TIME-LAPSE: Résidence Horizon (83 frames) */}
         {/* Synchronized directly to page scroll — zero video player or sliders */}
         {/* ==================================================================== */}
-        <div ref={villaTrackRef} className="relative pt-16 border-t border-[#EAE6DD]/15 min-h-[calc(100svh-4.5rem)]">
+        <div ref={villaTrackRef} className="relative pt-16 border-t border-[#EAE6DD]/15 lg:h-[230vh]">
           
-          {/* Sticky Container pinned during scroll — internally scrollable so no
-              content is ever clipped on short viewports (mobile / laptop) */}
-          <div className="sticky top-16 sm:top-20 w-full max-h-[calc(100svh-4.5rem)] sm:max-h-[calc(100svh-6rem)] bg-[#121312] border border-[#EAE6DD]/15 p-4 sm:p-8 rounded-xs shadow-2xl overflow-y-auto space-y-5 sm:space-y-6">
+          {/* Desktop only: the tall track is pinned and the page scroll drives the
+              sequence. On mobile the block is normal height and NOT sticky, so it
+              never creates a nested scroll area — page scroll stays natural. */}
+          <div className="lg:sticky lg:top-20 w-full bg-[#121312] border border-[#EAE6DD]/15 p-4 sm:p-8 rounded-xs shadow-2xl space-y-5 sm:space-y-6">
             
             {/* Header info */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#EAE6DD]/10">
