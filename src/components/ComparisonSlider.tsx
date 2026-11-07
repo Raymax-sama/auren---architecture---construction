@@ -307,7 +307,7 @@ export default function ComparisonSlider() {
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
-              className="relative w-full aspect-video bg-black border border-[#EAE6DD]/20 rounded-xs overflow-hidden cursor-ew-resize shadow-2xl select-none touch-none"
+              className="relative w-full aspect-video bg-black border border-[#EAE6DD]/20 rounded-xs overflow-hidden cursor-ew-resize shadow-2xl select-none"
               role="slider"
               aria-label={`Comparateur interactif pour ${current.title}`}
               aria-valuenow={sliderPos}
@@ -448,11 +448,11 @@ export default function ComparisonSlider() {
         {/* SCROLL-DRIVEN ARCHITECTURAL TIME-LAPSE: Résidence Horizon (83 frames) */}
         {/* Synchronized directly to page scroll — zero video player or sliders */}
         {/* ==================================================================== */}
-        <div ref={villaTrackRef} className="relative pt-16 border-t border-[#EAE6DD]/15 h-[230vh]">
+        <div ref={villaTrackRef} className="relative pt-16 border-t border-[#EAE6DD]/15 min-h-[calc(100svh-4.5rem)]">
           
           {/* Sticky Container pinned during scroll — internally scrollable so no
               content is ever clipped on short viewports (mobile / laptop) */}
-          <div className="sticky top-16 sm:top-20 w-full max-h-[calc(100svh-4.5rem)] sm:max-h-[calc(100svh-6rem)] bg-[#121312] border border-[#EAE6DD]/15 p-4 sm:p-8 rounded-xs shadow-2xl overflow-hidden overscroll-contain space-y-5 sm:space-y-6">
+          <div className="sticky top-16 sm:top-20 w-full max-h-[calc(100svh-4.5rem)] sm:max-h-[calc(100svh-6rem)] bg-[#121312] border border-[#EAE6DD]/15 p-4 sm:p-8 rounded-xs shadow-2xl overflow-y-auto space-y-5 sm:space-y-6">
             
             {/* Header info */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#EAE6DD]/10">
